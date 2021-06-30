@@ -15,6 +15,7 @@ import {
   HeaderTitle,
   Form
 } from './styles';
+import { useNavigation } from '@react-navigation/native';
 
 interface FormData {
   title: string;
@@ -29,6 +30,9 @@ const schema = Yup.object().shape({
 })
 
 export function RegisterLoginData() {
+  const loginKey = '@passmanager:logins';
+  
+
   const {
     control,
     handleSubmit,
@@ -36,7 +40,10 @@ export function RegisterLoginData() {
     formState: {
       errors
     }
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(schema)
+  });
+
 
   async function handleRegister(formData: FormData) {
     const newLoginData = {
@@ -44,7 +51,18 @@ export function RegisterLoginData() {
       ...formData
     }
 
-    // Save data on AsyncStorage
+    const storagedData = await AsyncStorage.getItem(loginKey);
+
+    const currentData = storagedData ? JSON.parse(storagedData!) : [];
+
+    const dataFormated = [
+        ...currentData,
+        newLoginData
+    ];            
+    
+    await AsyncStorage.setItem(loginKey, JSON.stringify(dataFormated));
+    reset();
+    Alert.alert('Seus dados foram armazenados com sucesso');
   }
 
   return (
@@ -61,7 +79,7 @@ export function RegisterLoginData() {
             title="Título"
             name="title"
             error={
-              // message error here
+              errors.title && errors.title.message
             }
             control={control}
             placeholder="Escreva o título aqui"
@@ -72,7 +90,7 @@ export function RegisterLoginData() {
             title="Email"
             name="email"
             error={
-              // message error here
+              errors.email && errors.email.message
             }
             control={control}
             placeholder="Escreva o Email aqui"
@@ -84,7 +102,7 @@ export function RegisterLoginData() {
             title="Senha"
             name="password"
             error={
-              // message error here
+              errors.password && errors.password.message
             }
             control={control}
             secureTextEntry
