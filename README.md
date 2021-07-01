@@ -34,3 +34,6 @@ ou utilizando o yarn
 - O Expo irá disponibilizar para você um QR Code para que você possa utilizar seu dispositivo físico, ou você pode selecionar uma das opções para abrir a aplicação com um emulador.
 
 ## Exemplo em execução
+
+
+https://user-images.githubusercontent.com/48105194/124059064-dbf42d80-da00-11eb-9cf3-5d66ddb29516.mov
