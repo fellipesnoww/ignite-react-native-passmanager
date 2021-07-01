@@ -4,18 +4,18 @@ import { useForm } from 'react-hook-form';
 import { RFValue } from 'react-native-responsive-fontsize';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 
 import { Input } from '../../components/Form/Input';
 import { Button } from '../../components/Form/Button';
+import { useStorageData } from '../../hooks/useStorageData';
 
 import {
   Container,
   HeaderTitle,
   Form
 } from './styles';
-import { useNavigation } from '@react-navigation/native';
+
 
 interface FormData {
   title: string;
@@ -30,8 +30,8 @@ const schema = Yup.object().shape({
 })
 
 export function RegisterLoginData() {
-  const loginKey = '@passmanager:logins';
-  
+
+  const { setItem } = useStorageData();
 
   const {
     control,
@@ -51,16 +51,8 @@ export function RegisterLoginData() {
       ...formData
     }
 
-    const storagedData = await AsyncStorage.getItem(loginKey);
+    setItem(newLoginData);
 
-    const currentData = storagedData ? JSON.parse(storagedData!) : [];
-
-    const dataFormated = [
-        ...currentData,
-        newLoginData
-    ];            
-    
-    await AsyncStorage.setItem(loginKey, JSON.stringify(dataFormated));
     reset();
     Alert.alert('Seus dados foram armazenados com sucesso');
   }
